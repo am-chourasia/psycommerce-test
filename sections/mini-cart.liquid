@@ -36,6 +36,18 @@
     </div>
   {%- else -%}
     <div class="drawer__content">
+      
+      <!-- Custom Text -->
+      {%- if cart != empty -%}
+        <div class="cstm_cart_text">
+          <span class="cstm_cart_icon">
+            {% render 'cstm_cart_icon' %}
+          </span>
+          <p><strong>Gute Wahl!</strong> Deine Bestellung ist in 1-2 Werktagen bei Dir zu Hause.</p>
+        </div>
+      {% endif %}
+      <!-- Custom Text -->
+      
       {%- if settings.cart_show_free_shipping_threshold and settings.cart_free_shipping_threshold != '' and cart.requires_shipping -%}
         {%- assign free_shipping_thresholds = settings.cart_free_shipping_threshold | remove: ' ' | split: ',' -%}
         {%- assign has_found_matching_threshold = false -%}
@@ -324,6 +336,33 @@
     </div>
 
     <footer class="mini-cart__drawer-footer drawer__footer drawer__footer--tight drawer__footer--bordered">
+
+      {% comment %}Custom Upsell in cart footer{% endcomment %}
+      <div class="cstm_cart_upsell">
+        <p class="main_head">Passend dazu:</p>
+        <div class="upsell_main">
+          {% assign one_product = blank %}
+          {% for item in cart.items %}
+            {% assign upsell_product = item.product.metafields.custom.upsell_products.value %}
+            {% if one_product == blank %}
+              {% assign one_product = upsell_product %}
+            {% endif %}
+          {% endfor %}
+          {%- assign number_of_products_minus_one = 3 | minus: 1 -%}
+          {%- assign gap_width = 24.0 | divided_by: 3 | times: number_of_products_minus_one -%}
+          {%- capture sizes_attribute -%}(max-width: 740px) 52vw, calc(min(100vw - 80px, 1520px) / 3 - {{ gap_width | ceil }}px){%- endcapture -%}
+
+          {% for product in one_product %}
+            {% if product.selected_or_first_available_variant.available %}
+              <div class="upsell_single">
+                {%- render 'cstm_upsell_card', product: product, show_cta: true, block: block, sizes_attribute: sizes_attribute, reveal: false -%}
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+      {% comment %}Custom Upsell in cart footer{% endcomment %}
+      
       {%- capture shipping_tax_note -%}{{ 'cart.general.shipping_tax_note' | t }}{%- endcapture -%}
 
       {%- if cart.cart_level_discount_applications != blank -%}
