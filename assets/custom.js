@@ -128,3 +128,198 @@
  * "photoswipe": v4.1.3. PhotoSwipe is only loaded on demand to power the zoom feature on product page. If the zoom
  * feature is disabled, then this script is never loaded.
  */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const element = document.querySelector(".article__content");
+  const text = element.innerHTML;
+  const regex = /\[product="(.*?)"/g;
+  const productSkus = [];
+  let modifiedText = text;
+
+  const replaceProduct = function (sku) {
+    const storefront = window.ShopifyBuy.buildClient({
+      domain: "assessment-center-115.myshopify.com",
+      storefrontAccessToken: "39aabe9f2d5fa6f33ee1a0029eab4f4e",
+    });
+    productSkus.push(sku);
+
+    return new Promise(function (resolve, reject) {
+      return storefront.product
+        .fetchQuery({ query: '"' + sku + '"' })
+        .then((products) => {
+          if (products && products.length > 0) {
+            const product = products[0];
+            const productTemplate = getProductTemplateFromProduct(product);
+            resolve({ sku: sku, template: productTemplate });
+          } else {
+            reject(sku);
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          reject(sku);
+        });
+    });
+  };
+
+  const promises = [];
+  let match;
+  while ((match = regex.exec(text))) {
+    const sku = match[1];
+    promises.push(replaceProduct(sku));
+  }
+
+  Promise.all(promises)
+    .then(function (results) {
+      results.forEach(function (result) {
+        const regex = new RegExp('\\[product="' + result.sku + '"]', "g");
+        modifiedText = modifiedText.replace(regex, result.template);
+      });
+      element.innerHTML = modifiedText;
+    })
+    .catch(function (failedSku) {
+      console.log("Failed to fetch product with SKU: " + failedSku);
+    });
+});
+
+function getProductTemplateFromProduct(product) {
+  const productId = product.id.split("/").pop();
+  const variantId = product.variants[0].id.split("/").pop();
+  const priceAmount = product.variants[0].price.amount;
+  const compareAtPrice = product.variants[0].compareAtPrice.amount;
+  const currencyCode = product.variants[0].price.currencyCode;
+  const formattedPrice = new Intl.NumberFormat("de-DE", {
+    style: "currency",
+    currency: currencyCode,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(priceAmount);
+
+  
+  return `<div class="product-item custom_blog_product" style="opacity: 1">
+  <div class="product-item__image-wrapper">
+    <div class="product-item__label-list label-list">
+      <span class="label label--highlight">Save ${compareAtPrice - priceAmount} ${product.variants[0].price.currencyCode}</span>
+    </div>
+    <a
+      href="/products/${product.handle}"
+      data-instant=""
+      class="product-item__aspect-ratio aspect-ratio"
+      style="
+        padding-bottom: 100%;
+        --aspect-ratio: 1;
+      "
+      ><img
+        src="${product.images[0].src}"
+        alt="${product.images[0].altText}"
+        width="${product.images[0].width}"
+        height="${product.images[0].height}"
+        loading="lazy"
+        sizes="(max-width: 740px) calc(50vw - 24px), calc((min(100vw - 80px, 1520px) - 305px) / 4 - 18px)"
+        class="product-item__primary-image"
+      />
+    </a>
+    <form
+      method="post"
+      action="/cart/add"
+      id="product_form_template--16713331998911__main__${product.id}_0"
+      accept-charset="UTF-8"
+      class="product-item__quick-form"
+      enctype="multipart/form-data"
+      is="product-form"
+    >
+      <input type="hidden" name="form_type" value="product" /><input
+        type="hidden"
+        name="utf8"
+        value="✓"
+      /><input type="hidden" name="quantity" value="1" />
+      <input type="hidden" name="id" value="${variantId}" />
+      <button
+        is="loader-button"
+        type="submit"
+        class="button button--outline button--text button--full hidden-touch"
+      >
+        <span class="loader-button__text">+ Add to cart</span>
+        <span class="loader-button__loader" hidden="">
+          <div class="spinner">
+            <svg
+              focusable="false"
+              width="24"
+              height="24"
+              class="icon icon--spinner"
+              viewBox="25 25 50 50"
+            >
+              <circle
+                cx="50"
+                cy="50"
+                r="20"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="5"
+              ></circle>
+            </svg>
+          </div>
+        </span>
+      </button>
+      <button
+        type="submit"
+        class="product-item__quick-buy-button hidden-no-touch"
+      >
+        <span class="visually-hidden">+ Add to cart</span
+        ><svg
+          focusable="false"
+          width="24"
+          height="24"
+          class="icon icon--quick-buy-shopping-bag"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M14 4H5L4 20H20C19.7517 16.0273 19.375 10 19.375 10"
+            stroke="currentColor"
+            stroke-width="2"
+          ></path>
+          <path
+            d="M9 7V7C9 8.65685 10.3431 10 12 10V10C13.6569 10 15 8.65685 15 7V7"
+            stroke="currentColor"
+            stroke-width="2"
+          ></path>
+          <path
+            d="M20 0V8M16 4H24"
+            stroke="currentColor"
+            stroke-width="2"
+          ></path>
+        </svg></button
+      ><input type="hidden" name="product-id" value="${productId}" /><input
+        type="hidden"
+        name="section-id"
+        value="template--16713331998911__main"
+      />
+    </form>
+  </div>
+
+  <div class="product-item__info">
+    <div class="product-item-meta">
+      <a
+        href="/products/${product.handle}"
+        data-instant=""
+        class="product-item-meta__title"
+        >${product.title}</a
+      >
+
+      <div class="product-item-meta__price-list-container">
+        <div class="price-list price-list--centered">
+          <span class="price price--highlight">
+            <span class="visually-hidden">Sale price</span>${product.variants[0].price.amount} ${product.variants[0].price.currencyCode}</span
+          >
+
+          <span class="price price--compare">
+            <span class="visually-hidden">Regular price</span>${compareAtPrice} ${product.variants[0].price.currencyCode}</span
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          `;
+}

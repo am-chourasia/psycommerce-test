@@ -1,0 +1,202 @@
+/* Drawer Css */
+.drawer .cstm_cart_text {
+    margin: 0 -41px 19px;
+    padding: 12px 19px 13px 20px;
+    display: flex;
+    align-items: center;
+    background: #E8EFD8;
+}
+
+.drawer .cstm_cart_text span.cstm_cart_icon {
+    display: flex;
+    width: 33px;
+    margin-right: 10px;
+}
+
+.drawer .cstm_cart_text p {
+    margin: 0;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.14;
+    color: #000;
+}
+.drawer .drawer__header {
+    padding: 1rem 0;
+}
+.drawer .drawer__heading {
+    margin: 0;
+    font-family: Poppins;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 1.76;
+    text-transform: uppercase;
+}
+.drawer .drawer__close {
+    min-width: 16px;
+    min-height: 16px;
+    top: 18px;
+    right: 4px;
+}
+.drawer .drawer__close svg {
+    height: 16px;
+    width: 16px;
+}
+.drawer .cart-item__name {
+    color: #000;
+    font-family: Poppins;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+  line-height: 0.92;
+}
+.drawer .quantity {
+    min-height: 24px;
+}
+.drawer .cart-item__name:hover {
+    text-decoration: none;
+}
+cart-drawer-items.is-empty+.drawer__footer {
+    display: none;
+}
+.drawer .cart-drawer__warnings .drawer__close {
+    right: 15px;
+}
+.drawer.is-empty .drawer__footer {
+    display: none;
+}
+.drawer .main_head {
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 1.53;
+    text-transform: uppercase;
+    color: #000;
+    margin: 5px 0;
+}
+
+/* Upsell Css */
+.upsell_main {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.upsell_main .upsell_single {
+    min-width: 291px;
+    max-height: 100px;
+    display: flex;
+    align-items: center;
+    border-radius: 3px;
+    background: #F5F5F5;
+    gap: 9px;
+    padding: 11px 9px 9px 13px;
+}
+.upsell_main .upsell_single img {
+    max-width: 72px;
+    border-radius: 3px;
+}
+.upsell_main .quick-add__submit {
+    box-sizing: border-box;
+    min-width: auto;
+    padding: 0;
+    background: none;
+    border: none;
+    display: flex;
+    cursor: pointer;
+}
+.upsell_main::-webkit-scrollbar{
+  display: none;
+}
+.upsell_main .quick-add {
+    margin: 0;
+}
+.upsell_main .quick-add__submit.sold_out{
+  pointer-events: none;
+  opacity: 0.6;
+}
+.upsell_main .pro_title {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 0.92;
+    margin: 0;
+}
+cart-drawer.is-empty .cstm_cart_upsell {
+    display: none;
+}
+
+/* Blog post css */
+  .hide {
+    display: none;
+  }
+.art_prod {
+    display: block;
+    margin: 10px auto;
+    max-width: 300px;
+    border: 1px solid #eeeeee;
+    padding: 10px;
+    border-radius: 3px;
+}
+.art_prod .card__heading {
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 1.13;
+    color: #000;
+    text-align: left;
+}
+.art_prod .quick-add__submit {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    text-transform: uppercase;
+    color: #fff;
+    background-color: #323232;
+    padding: 8px 11px;
+    border-radius: 2px;
+    margin: 0;
+    min-width: unset;
+    width: auto;
+    min-height: auto;
+}
+.art_prod .card__information {
+    padding: 19px 0 7px;
+}
+cart-drawer-recommendations.mini-cart__recommendations {
+    display: none !important;
+}
+.upsell_main .upsell_single button.product-item__cta.button.button--primary {
+    padding: 0;
+    width: auto;
+    height: auto;
+    margin: 0;
+    background: transparent;
+}
+span.quick_icon {
+    display: flex;
+}
+.article__content .product-wrap {
+    max-width: 400px;
+    margin: 0 auto;
+}
+.product-item.custom_blog_product .product-item__label-list {
+    z-index: 0;
+}
+.product-item.custom_blog_product {
+    max-width: 350px;
+    margin: 0 auto;
+}
+/* Responsive Css */
+@media screen and (min-width: 750px){
+  .drawer .cart-item__media {
+    width: 75px;
+  }
+  .price {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 0.82;
+  }
+}
